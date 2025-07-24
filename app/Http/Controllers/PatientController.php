@@ -113,4 +113,14 @@ class PatientController extends Controller
         $patient->delete();
         return redirect()->route('patients.index')->with('success', 'Patient deleted.');
     }
+
+
+
+    public function getPalities($district_id)
+    {
+        $palities = Pality::where('district_id', $district_id)->get();
+
+        return response()->json($palities);
+    }
+
 }

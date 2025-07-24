@@ -37,15 +37,13 @@
 
             <!-- District -->
             <div class="mb-3">
-                <label for="district_id" class="form-label">District</label>
-                <select name="district_id" id="district_id" class="form-control @error('district_id') is-invalid @enderror">
-                    <option value="">Select District</option>
-                    @foreach ($districts as $district)
-                        <option value="{{ $district->id }}" {{ old('district_id') == $district->id ? 'selected' : '' }}>
-                            {{ $district->title }}
-                        </option>
-                    @endforeach
-                </select>
+                <label for="district_id">District</label>
+                    <select name="district_id" id="district_id" class="form-control" required>
+                        <option value="">Select District</option>
+                        @foreach ($districts as $district)
+                            <option value="{{ $district->id }}">{{ $district->title }}</option>
+                        @endforeach
+                    </select>
                 @error('district_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -53,14 +51,10 @@
 
             <!-- Pality -->
             <div class="mb-3">
-                <label for="pality_id" class="form-label">Palities</label>
-                <select name="pality_id" id="pality_id" class="form-control @error('pality_id') is-invalid @enderror">
+                <label for="pality_id">Pality</label>
+                <select name="pality_id" id="pality_id" class="form-control" required>
                     <option value="">Select Pality</option>
-                    @foreach ($palities as $pality)
-                        <option value="{{ $pality->id }}" {{ old('pality_id') == $pality->id ? 'selected' : '' }}>
-                            {{ $pality->title }}
-                        </option>
-                    @endforeach
+                    {{-- Populated dynamically --}}
                 </select>
                 @error('pality_id')
                     <div class="invalid-feedback">{{ $message }}</div>
@@ -134,6 +128,33 @@
 
             // Initialize CKEditor on description textarea
             CKEDITOR.replace('description');
+        });
+    </script>
+
+    <script>
+        $('#district_id').on('change', function () {
+            const districtId = $(this).val();
+
+            $('#pality_id').html('<option value="">Loading...</option>');
+
+            if (districtId) {
+                $.ajax({
+                    url: `/get-palities/${districtId}`,
+                    method: 'GET',
+                    success: function (data) {
+                        let options = '<option value="">Select Pality</option>';
+                        data.forEach(pality => {
+                            options += `<option value="${pality.id}">${pality.title}</option>`;
+                        });
+                        $('#pality_id').html(options);
+                    },
+                    error: function () {
+                        $('#pality_id').html('<option value="">Error loading palities</option>');
+                    }
+                });
+            } else {
+                $('#pality_id').html('<option value="">Select District First</option>');
+            }
         });
     </script>
 </body>

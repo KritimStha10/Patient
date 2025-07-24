@@ -116,6 +116,33 @@
             // Initialize CKEditor
             CKEDITOR.replace('description');
         });
+
+
+        $('#district_id').on('change', function () {
+            const districtId = $(this).val();
+            const palitySelect = $('#pality_id');
+
+            palitySelect.html('<option value="">Loading...</option>');
+
+            if (districtId) {
+                $.ajax({
+                    url: `/get-palities/${districtId}`,
+                    method: 'GET',
+                    success: function (data) {
+                        let options = '<option value="">Select Pality</option>';
+                        data.forEach(function (pality) {
+                            options += `<option value="${pality.id}">${pality.title}</option>`;
+                        });
+                        palitySelect.html(options);
+                    },
+                    error: function () {
+                        palitySelect.html('<option value="">Error loading palities</option>');
+                    }
+                });
+            } else {
+                palitySelect.html('<option value="">Select District First</option>');
+            }
+        });
     </script>
 </body>
 </html>

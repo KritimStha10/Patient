@@ -19,3 +19,8 @@ Route::get('/patients/{patient}/edit', [PatientController::class, 'edit'])->name
 Route::put('/patients/{patient}/update', [PatientController::class, 'update'])->name('patients.update');
 
 Route::delete('/patients/{patient}/delete', [PatientController::class, 'destroy'])->name('patients.destroy');
+
+
+
+Route::get('/get-palities/{district_id}', [PatientController::class, 'getPalities']);
+
